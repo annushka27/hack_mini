@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcademiaCRM - AI-Powered B2B Academia CRM</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-backdrop" id="login-container">
+        <div class="login-card" id="login-card-view">
+            <!-- Close button for Guest mode viewing -->
+            <span class="auth-close" id="auth-close-btn" title="Close and view About Page">&times;</span>
+            <div class="login-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h2>AcademiaCRM</h2>
+            </div>
+            <h3 id="auth-title">Sign in to CRM</h3>
+            <p class="login-sub" id="auth-subtitle">Welcome back! Please enter your credentials.</p>
+            
+            <!-- Sign In Form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="e.g. sneha@academiacrm.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full" style="margin-top: 10px;">Sign In</button>
+                <p style="margin-top: 16px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+                    Don't have an account? <span id="toggle-signup" style="color: var(--primary); cursor: pointer; font-weight: 600;">Sign up</span>
+                </p>
+            </form>
+
+            <!-- Sign Up Form (hidden by default) -->
+            <form id="signup-form" style="display: none;">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" placeholder="e.g. Sneha Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="e.g. sneha@academiacrm.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-role">Role Title</label>
+                    <input type="text" id="signup-role" class="form-control" placeholder="e.g. Sales Manager" required value="Sales Representative">
+                </div>
+                <button type="submit" class="btn btn-primary w-full" style="margin-top: 10px;">Create Account</button>
+                <p style="margin-top: 16px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+                    Already have an account? <span id="toggle-signin" style="color: var(--primary); cursor: pointer; font-weight: 600;">Sign in</span>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container" id="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>AcademiaCRM</h1>
+                    <span>AI-Powered Sales CRM</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="menu-item active" data-target="dashboard-view">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </div>
+
+                <div class="menu-label">Leads</div>
+                <div class="menu-item" data-target="all-leads-view">
+                    <i class="fa-solid fa-users"></i>
+                    <span>All Leads</span>
+                </div>
+                <div class="menu-item" data-target="add-lead-btn-sidebar" id="sidebar-add-lead-trigger">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Add Lead</span>
+                </div>
+                <div class="menu-item" data-target="pipeline-view">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <span>Lead Pipeline</span>
+                </div>
+                <div class="menu-item" data-target="import-leads-view">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>Lead Import</span>
+                </div>
+
+                <div class="menu-label">Follow-ups</div>
+                <div class="menu-item" data-target="follow-ups-view">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>My Follow-ups</span>
+                </div>
+                <div class="menu-item" data-target="tasks-view">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <span>Tasks & Reminders</span>
+                </div>
+
+                <div class="menu-label">Meetings</div>
+                <div class="menu-item" data-target="calendar-view">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Meeting Calendar</span>
+                </div>
+                <div class="menu-item" id="sidebar-schedule-meeting-trigger">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    <span>Schedule Meeting</span>
+                </div>
+
+                <div class="menu-label">AI Insights</div>
+                <div class="menu-item" data-target="ai-insights-view">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Lead Intelligence</span>
+                </div>
+                <div class="menu-item" data-target="ai-outreach-view">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <span>AI Outreach Assistant</span>
+                </div>
+
+                <div class="menu-label">Reports & Info</div>
+                <div class="menu-item" data-target="reports-view">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Reports & Analytics</span>
+                </div>
+                <div class="menu-item" data-target="about-view">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>About CRM</span>
+                </div>
+            </nav>
+
+            <!-- Sidebar profile with change DP & logout -->
+            <div class="sidebar-profile">
+                <div class="sidebar-profile-info" id="sidebar-profile-trigger" title="Edit Profile">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120" alt="Sneha Sharma" class="profile-pic" id="sidebar-profile-pic">
+                    <div class="profile-text">
+                        <span class="user-name" id="sidebar-user-name">Sneha Sharma</span>
+                        <span class="user-role" id="sidebar-user-role">Sales Manager</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logout-trigger" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Body -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <!-- Guest mode logo (hidden by default, shown via CSS in guest-mode) -->
+                <div class="guest-logo" style="display: none; align-items: center; gap: 10px;">
+                    <div class="logo-icon" style="width: 32px; height: 32px; font-size: 16px;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px;">AcademiaCRM</span>
+                </div>
+
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="global-search" placeholder="Search institutions, contacts, leads...">
+                </div>
+                
+                <div class="topbar-actions">
+                    <!-- Guest mode actions (hidden by default, shown via CSS in guest-mode) -->
+                    <div class="guest-auth-buttons" style="display: none; gap: 10px;">
+                        <button class="btn btn-secondary btn-sm" id="topbar-signin-btn">Sign In</button>
+                        <button class="btn btn-primary btn-sm" id="topbar-signup-btn">Sign Up</button>
+                    </div>
+
+                    <div class="notification-bell" id="notification-trigger">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge" id="notif-count">3</span>
+                        <!-- Notification Dropdown -->
+                        <div class="notification-dropdown" id="notif-dropdown">
+                            <div class="dropdown-header">
+                                <h3>Notifications</h3>
+                                <span class="mark-all-read" id="mark-read-btn">Mark all read</span>
+                            </div>
+                            <div class="dropdown-body" id="notification-list">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-profile" id="topbar-profile-trigger" style="cursor: pointer;" title="Edit Profile">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120" alt="Sneha Sharma" class="profile-pic" id="topbar-profile-pic">
+                        <div class="profile-info">
+                            <span class="user-name" id="topbar-user-name">Sneha Sharma</span>
+                            <span class="user-role" id="topbar-user-role">Sales Manager</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="add-lead-btn-top">
+                        <i class="fa-solid fa-plus"></i> Add New Lead
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic View Containers -->
+            <div class="view-container">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <section id="dashboard-view" class="view-section active">
+                    <div class="dashboard-welcome">
+                        <h2>Dashboard</h2>
+                        <p>Welcome back, <strong id="welcome-user-name">Sneha!</strong></p>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-card card-total">
+                            <div class="metric-info">
+                                <span class="metric-label">Total Institutions Contacted</span>
+                                <h3 class="metric-value" id="metric-total">1,248</h3>
+                                <span class="metric-trend text-green"><i class="fa-solid fa-arrow-trend-up"></i> 12.5% vs last month</span>
+                            </div>
+                            <div class="metric-icon bg-green-light">
+                                <i class="fa-solid fa-building-columns text-green-dark"></i>
+                            </div>
+                        </div>
+                        <div class="metric-card card-active">
+                            <div class="metric-info">
+                                <span class="metric-label">Active Leads</span>
+                                <h3 class="metric-value" id="metric-active">312</h3>
+                                <span class="metric-trend text-green"><i class="fa-solid fa-arrow-trend-up"></i> 8.3% vs last month</span>
+                            </div>
+                            <div class="metric-icon bg-emerald-light">
+                                <i class="fa-solid fa-user-tag text-emerald-dark"></i>
+                            </div>
+                        </div>
+                        <div class="metric-card card-meetings">
+                            <div class="metric-info">
+                                <span class="metric-label">Meetings Scheduled</span>
+                                <h3 class="metric-value" id="metric-meetings">78</h3>
+                                <span class="metric-trend text-green"><i class="fa-solid fa-arrow-trend-up"></i> 15.2% vs last month</span>
+                            </div>
+                            <div class="metric-icon bg-teal-light">
+                                <i class="fa-solid fa-calendar-check text-teal-dark"></i>
+                            </div>
+                        </div>
+                        <div class="metric-card card-proposals">
+                            <div class="metric-info">
+                                <span class="metric-label">Proposals Sent</span>
+                                <h3 class="metric-value" id="metric-proposals">46</h3>
+                                <span class="metric-trend text-green"><i class="fa-solid fa-arrow-trend-up"></i> 10.1% vs last month</span>
+                            </div>
+                            <div class="metric-icon bg-sage-light">
+                                <i class="fa-solid fa-file-invoice-dollar text-sage-dark"></i>
+                            </div>
+                        </div>
+                        <div class="metric-card card-closed">
+                            <div class="metric-info">
+                                <span class="metric-label">Closed Deals</span>
+                                <h3 class="metric-value" id="metric-closed">23</h3>
+                                <span class="metric-trend text-green"><i class="fa-solid fa-arrow-trend-up"></i> 21.7% vs last month</span>
+                            </div>
+                            <div class="metric-icon bg-mint-light">
+                                <i class="fa-solid fa-handshake text-mint-dark"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Lead Status Distribution</h3>
+                                <select class="chart-filter">
+                                    <option>This Month</option>
+                                    <option>This Quarter</option>
+                                    <option>This Year</option>
+                                </select>
+                            </div>
+                            <div class="chart-container-wrapper">
+                                <canvas id="leadStatusChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Monthly Conversions</h3>
+                                <select class="chart-filter">
+                                    <option>This Year</option>
+                                    <option>Last Year</option>
+                                </select>
+                            </div>
+                            <div class="chart-container-wrapper">
+                                <canvas id="conversionsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Sales Pipeline</h3>
+                                <select class="chart-filter">
+                                    <option>This Month</option>
+                                    <option>This Quarter</option>
+                                </select>
+                            </div>
+                            <div class="chart-container-wrapper">
+                                <canvas id="pipelineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Widgets Grid -->
+                    <div class="widgets-grid">
+                        <!-- Recent Leads -->
+                        <div class="widget-card col-span-1">
+                            <div class="widget-header">
+                                <h3>Recent Leads</h3>
+                                <span class="view-all-link" id="view-all-leads-dash">View All</span>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table" id="recent-leads-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Institution</th>
+                                            <th>Contact Person</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Priority Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Populated via Javascript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- AI Lead Insights (Top Lead) -->
+                        <div class="widget-card col-span-2">
+                            <div class="widget-header">
+                                <h3>AI Lead Insights (Top Lead)</h3>
+                                <span class="view-all-link" id="view-all-ai-insights">View All</span>
+                            </div>
+                            <div class="ai-insight-content" id="top-lead-ai-insight">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Follow-ups -->
+                        <div class="widget-card col-span-3">
+                            <div class="widget-header">
+                                <h3>Upcoming Follow-ups</h3>
+                                <span class="view-all-link" id="view-all-followups-dash">View All</span>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table" id="dashboard-followups-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Lead / Institution</th>
+                                            <th>Follow-up Date</th>
+                                            <th>Owner</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Assistant Footer Bar -->
+                    <div class="ai-footer-bar">
+                        <div class="ai-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="ai-message-content">
+                            <h4>AI Assistant</h4>
+                            <p id="ai-assistant-greeting">Hey Sneha! You have 12 pending follow-ups and 3 high priority leads to connect with today.</p>
+                        </div>
+                        <div class="ai-quick-actions">
+                            <button class="btn btn-action" id="action-view-tasks"><i class="fa-solid fa-clipboard-check"></i> View Tasks</button>
+                            <button class="btn btn-action" id="action-view-leads"><i class="fa-solid fa-fire-flame-curved"></i> View Leads</button>
+                            <button class="btn btn-action btn-green-solid" id="action-generate-email"><i class="fa-solid fa-magic"></i> Generate Outreach Email</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. ALL LEADS VIEW -->
+                <section id="all-leads-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Institution Leads</h2>
+                            <p>Manage and track all partner universities and technical colleges.</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn btn-secondary" id="import-csv-trigger-leads-view"><i class="fa-solid fa-file-import"></i> Import Leads</button>
+                            <button class="btn btn-primary" id="add-lead-btn-leads-view"><i class="fa-solid fa-plus"></i> Add New Lead</button>
+                        </div>
+                    </div>
+
+                    <!-- Filters & Search Toolbar -->
+                    <div class="toolbar-card">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="leads-search-input" placeholder="Search by name, contact or location...">
+                        </div>
+                        <div class="filter-group">
+                            <select id="filter-type">
+                                <option value="all">All Institution Types</option>
+                                <option value="Government College">Government College</option>
+                                <option value="Private University">Private University</option>
+                                <option value="Autonomous College">Autonomous College</option>
+                                <option value="Affiliated Engineering College">Affiliated College</option>
+                            </select>
+                            <select id="filter-status">
+                                <option value="all">All Lead Statuses</option>
+                                <option value="New Lead">New Lead</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Meeting Scheduled">Meeting Scheduled</option>
+                                <option value="Proposal Sent">Proposal Sent</option>
+                                <option value="Negotiation">Negotiation</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                            <select id="filter-priority">
+                                <option value="all">All Priorities</option>
+                                <option value="high">High Priority (>80)</option>
+                                <option value="medium">Medium Priority (50-80)</option>
+                                <option value="low">Low Priority (<50)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Leads Grid/Table -->
+                    <div class="widget-card table-wrapper-large">
+                        <div class="table-container">
+                            <table class="custom-table" id="all-leads-table">
+                                <thead>
+                                    <tr>
+                                        <th>Institution</th>
+                                        <th>Contact Details</th>
+                                        <th>Type & Strength</th>
+                                        <th>Program Interest</th>
+                                        <th>Status</th>
+                                        <th>Priority Score</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination">
+                            <span id="pagination-info">Showing 1-10 of 142 leads</span>
+                            <div class="pagination-buttons">
+                                <button class="btn btn-icon-sm" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="btn btn-icon-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. LEAD PIPELINE (KANBAN) -->
+                <section id="pipeline-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Sales Pipeline</h2>
+                            <p>Visual outreach stages. Drag & drop or use quick status actions to update lead progression.</p>
+                        </div>
+                        <button class="btn btn-primary" id="add-lead-btn-pipeline"><i class="fa-solid fa-plus"></i> Add Lead</button>
+                    </div>
+
+                    <!-- Kanban Board Container -->
+                    <div class="kanban-board" id="kanban-board">
+                        <!-- Columns will be injected here -->
+                    </div>
+                </section>
+
+                <!-- 4. MY FOLLOW-UPS / TASKS VIEW -->
+                <section id="follow-ups-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Follow-ups & Automations</h2>
+                            <p>Track automatic follow-up reminders, task status, and email triggers.</p>
+                        </div>
+                        <button class="btn btn-primary" id="add-followup-trigger"><i class="fa-solid fa-plus"></i> Create Custom Task</button>
+                    </div>
+
+                    <div class="followups-layout">
+                        <!-- Pending Tasks List -->
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h3>Outstanding Follow-ups</h3>
+                                <div class="filter-tabs">
+                                    <button class="tab-btn active" data-task-filter="all">All</button>
+                                    <button class="tab-btn" data-task-filter="pending">Pending</button>
+                                    <button class="tab-btn" data-task-filter="completed">Completed</button>
+                                    <button class="tab-btn" data-task-filter="overdue">Overdue</button>
+                                </div>
+                            </div>
+                            <div class="task-list" id="task-list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Automation Workflow Log -->
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h3>AI Automation Activity Log</h3>
+                                <span class="badge badge-success">Active</span>
+                            </div>
+                            <div class="activity-timeline" id="automation-timeline">
+                                <!-- Triggered log items showing CRM automations -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. MEETING CALENDAR VIEW -->
+                <section id="calendar-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Meeting Calendar</h2>
+                            <p>Plan technical briefings, proposal discussions, and academic partner meetings.</p>
+                        </div>
+                        <button class="btn btn-primary" id="calendar-add-meeting-btn"><i class="fa-solid fa-calendar-plus"></i> Schedule Meeting</button>
+                    </div>
+
+                    <div class="calendar-layout">
+                        <!-- Calendar Widget -->
+                        <div class="widget-card calendar-card">
+                            <div class="calendar-controls">
+                                <button class="btn btn-icon-sm" id="cal-prev-month"><i class="fa-solid fa-chevron-left"></i></button>
+                                <h3 id="cal-month-title">June 2026</h3>
+                                <button class="btn btn-icon-sm" id="cal-next-month"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <div class="calendar-grid-header">
+                                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                            </div>
+                            <div class="calendar-grid-days" id="calendar-days">
+                                <!-- Days will be generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Scheduled Events for selected day -->
+                        <div class="widget-card meetings-card">
+                            <div class="widget-header">
+                                <h3 id="selected-day-meetings-title">Meetings for today</h3>
+                            </div>
+                            <div class="meetings-list-container" id="day-meetings-list">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. LEAD INTELLIGENCE VIEW -->
+                <section id="ai-insights-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>AI Lead Intelligence Portal</h2>
+                            <p>In-depth institutional analysis, predictive scoring, and strategic partnership insights.</p>
+                        </div>
+                    </div>
+
+                    <div class="intelligence-layout">
+                        <!-- Left Selector -->
+                        <div class="widget-card lead-selector-panel">
+                            <h3>Select University / Lead</h3>
+                            <div class="lead-selectors-list" id="intelligence-selector-list">
+                                <!-- Lead items injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Right In-depth Details -->
+                        <div class="widget-card lead-intelligence-detail" id="intelligence-detail-card">
+                            <!-- Injected dynamically based on selected lead -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. AI OUTREACH ASSISTANT -->
+                <section id="ai-outreach-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>AI Outreach Assistant</h2>
+                            <p>Generate hyper-personalized emails, LinkedIn templates, and follow-up templates.</p>
+                        </div>
+                    </div>
+
+                    <div class="outreach-layout">
+                        <!-- Setup panel -->
+                        <div class="widget-card outreach-setup">
+                            <h3>Outreach Generator</h3>
+                            <div class="form-group">
+                                <label for="outreach-lead-select">Select Lead</label>
+                                <select id="outreach-lead-select" class="form-control">
+                                    <!-- Options populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="outreach-channel">Channel</label>
+                                <select id="outreach-channel" class="form-control">
+                                    <option value="email">Email</option>
+                                    <option value="linkedin">LinkedIn Connection Message</option>
+                                    <option value="whatsapp">WhatsApp Outreach</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="outreach-tone">Tone</label>
+                                <div class="tone-selector">
+                                    <label class="radio-label">
+                                        <input type="radio" name="tone" value="professional" checked> Professional
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="tone" value="collaborative"> Collaborative
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="tone" value="bold"> High Energy
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="outreach-custom-guidelines">Custom Instructions / Context (Optional)</label>
+                                <textarea id="outreach-custom-guidelines" class="form-control" rows="3" placeholder="e.g. Highlight our upcoming Python Bootcamp starting next month..."></textarea>
+                            </div>
+                            <button class="btn btn-primary w-full" id="generate-outreach-btn">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Outreach
+                            </button>
+                        </div>
+
+                        <!-- Results panel -->
+                        <div class="widget-card outreach-preview-card">
+                            <div class="widget-header">
+                                <h3>Generated Output Preview</h3>
+                                <button class="btn btn-secondary btn-sm" id="copy-outreach-btn"><i class="fa-regular fa-copy"></i> Copy Text</button>
+                            </div>
+                            <div class="outreach-result-box" id="outreach-result-box">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-magic"></i>
+                                    <p>Select a lead and click "Generate Outreach" to compose an AI-optimized personalized draft.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. LEAD IMPORT VIEW -->
+                <section id="import-leads-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Lead Import Wizard</h2>
+                            <p>Upload a CSV file or paste lead data from spreadsheets directly to populate your B2B Academia CRM.</p>
+                        </div>
+                    </div>
+
+                    <div class="import-layout">
+                        <div class="widget-card import-card">
+                            <h3>Paste CSV / Spreadsheet Data</h3>
+                            <p class="sub-instructions">Copy and paste rows from Excel/Google Sheets, or raw CSV data. Columns must be separated by commas or tabs.</p>
+                            <div class="form-group">
+                                <textarea id="csv-paste-area" class="form-control code-textarea" rows="12" placeholder="College Name,Location,Contact Person..."></textarea>
+                            </div>
+                            <div class="import-actions">
+                                <button class="btn btn-secondary" id="load-csv-template-btn">Load Demo Template</button>
+                                <button class="btn btn-primary" id="process-csv-btn"><i class="fa-solid fa-file-import"></i> Process & Import Leads</button>
+                            </div>
+                        </div>
+
+                        <div class="widget-card import-preview-panel">
+                            <h3>Import Preview</h3>
+                            <div class="import-preview-results" id="import-preview-results">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-table"></i>
+                                    <p>Paste data and click "Process & Import Leads" to preview formatting and validation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 9. REPORTS & ANALYTICS VIEW -->
+                <section id="reports-view" class="view-section">
+                    <div class="view-header-row">
+                        <div>
+                            <h2>Reports & Analytics</h2>
+                            <p>Download outreach logs, analyze team performance, and track conversion rates across channels.</p>
+                        </div>
+                    </div>
+
+                    <div class="reports-grid">
+                        <div class="widget-card col-span-3">
+                            <div class="widget-header">
+                                <h3>Outreach & Performance Log</h3>
+                                <button class="btn btn-secondary btn-sm" id="download-report-btn"><i class="fa-solid fa-download"></i> Export CSV Report</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table" id="reports-performance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Institution</th>
+                                            <th>Interest</th>
+                                            <th>Priority Score</th>
+                                            <th>Active Follow-ups</th>
+                                            <th>Conversion Progress</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 10. ABOUT VIEW -->
+                <section id="about-view" class="view-section">
+                    <div class="about-hero-section">
+                        <div class="about-hero-content">
+                            <span class="about-badge"><i class="fa-solid fa-sparkles"></i> AI-Powered Academic CRM</span>
+                            <h1 class="about-hero-title">AI takes care of academic sales.<br>You focus on partnerships.</h1>
+                            <p class="about-hero-subtitle">Meet AcademiaCRM, the people-first B2B Academic Sales platform. It prioritizes high-value university leads, drafts personalized outreach pitches, and automates follow-ups—so your team stays focused on closing MoUs, not spreadsheet administration.</p>
+                            <div class="about-hero-ctas">
+                                <button class="btn btn-primary btn-lg" id="about-signup-btn" style="padding: 14px 28px; font-size: 15px; font-weight: 700;">Try it free</button>
+                                <button class="btn-link" id="about-signin-btn" style="color: var(--primary); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 15px; border: none; background: transparent; padding: 12px 16px;">
+                                    Book a demo <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="about-hero-mockup">
+                            <div class="mockup-container">
+                                <div class="mockup-header">
+                                    <span class="mockup-dot red"></span>
+                                    <span class="mockup-dot yellow"></span>
+                                    <span class="mockup-dot green"></span>
+                                    <span class="mockup-title">AcademiaCRM - AI Lead Assistant</span>
+                                </div>
+                                <div class="mockup-body">
+                                    <!-- Sidebar Mockup -->
+                                    <div class="mockup-sidebar-left">
+                                        <div class="mockup-nav-item active"><i class="fa-solid fa-chart-pie"></i></div>
+                                        <div class="mockup-nav-item"><i class="fa-solid fa-users"></i></div>
+                                        <div class="mockup-nav-item"><i class="fa-solid fa-bell"></i></div>
+                                        <div class="mockup-nav-item"><i class="fa-solid fa-brain"></i></div>
+                                    </div>
+                                    <!-- Main Mockup Workspace -->
+                                    <div class="mockup-workspace">
+                                        <div class="mockup-card ai-recommendation">
+                                            <div class="mockup-card-header">
+                                                <div class="badge-ai-mockup"><i class="fa-solid fa-robot"></i> AI Recommended Action</div>
+                                                <span class="score-pill-mockup">92 Priority</span>
+                                            </div>
+                                            <div class="mockup-card-body">
+                                                <strong>GLA University (Mathura, UP)</strong>
+                                                <p style="font-size: 11px; margin-top: 4px; color: var(--text-secondary);">Large private institution looking for Technical Bootcamps.</p>
+                                                <span class="action-highlight-mockup"><i class="fa-solid fa-rocket"></i> Next Step: Schedule Intro Call</span>
+                                            </div>
+                                        </div>
+                                        <div class="mockup-card ai-email-draft">
+                                            <div class="mockup-card-header">
+                                                <span class="email-subject-mockup"><i class="fa-solid fa-envelope"></i> Subject: B2B Partnerships Enquiry</span>
+                                            </div>
+                                            <div class="mockup-card-body">
+                                                <p class="email-preview-mockup">Dear Dr. Sharma, with your student strength of 12,000+ students, we'd love to co-develop a roadmap for AI & ML Lab...</p>
+                                                <div class="mockup-actions">
+                                                    <span class="mockup-badge-pill"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Generated</span>
+                                                    <span class="mockup-action-btn-primary">Copy Draft</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive AI Tool Preview -->
+                    <div class="about-interactive-demo">
+                        <div class="demo-info">
+                            <span class="demo-pill"><i class="fa-solid fa-wand-magic-sparkles"></i> Try the AI Engine</span>
+                            <h3>Estimate Your Lead Priority Score</h3>
+                            <p>Drag the slider to adjust student capacity and select program interest to see how our predictive AI scoring model rates an institution instantly.</p>
+                        </div>
+                        <div class="demo-calculator">
+                            <div class="calc-group">
+                                <label style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; display: block;">Student Enrollment Strength: <strong id="demo-strength-val" style="color: var(--primary);">12,000</strong></label>
+                                <input type="range" id="demo-strength-slider" min="1000" max="50000" step="1000" value="12000" style="width: 100%; accent-color: var(--primary); cursor: pointer;">
+                            </div>
+                            <div class="calc-group">
+                                <label style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; display: block;">Program Interest</label>
+                                <select id="demo-interest-select" class="form-control" style="background-color: var(--bg-main); border-color: var(--border-color);">
+                                    <option value="AI & ML Lab Integration">AI & ML Lab Integration</option>
+                                    <option value="Technical Bootcamps">Technical Bootcamps</option>
+                                    <option value="Industry Placement Drives">Industry Placement Drives</option>
+                                    <option value="Short Workshops">Short Workshops</option>
+                                </select>
+                            </div>
+                            <div class="calc-result">
+                                <div class="calc-score-wrapper" style="border: 2px solid var(--primary); color: var(--primary); padding: 16px; border-radius: var(--radius-md); text-align: center; min-width: 120px; position: relative;">
+                                    <span id="demo-calculated-score" style="font-size: 36px; font-weight: 800; font-family: 'Outfit', sans-serif; display: block; line-height: 1;">92</span>
+                                    <span class="score-lbl" style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-top: 4px; display: block;">Priority Score</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Menu -->
+                    <div class="about-tabs-container">
+                        <div class="about-tabs-nav">
+                            <button class="about-tab-btn active" data-tab="benefits">Benefits</button>
+                            <button class="about-tab-btn" data-tab="capabilities">Capabilities</button>
+                            <button class="about-tab-btn" data-tab="stack">Developer Stack</button>
+                        </div>
+                        
+                        <div class="about-tabs-content">
+                            <!-- 1. BENEFITS TAB -->
+                            <div class="about-tab-pane active" id="about-tab-benefits">
+                                <div class="about-grid">
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                                        <h3>Eliminate Spreadsheet Chaos</h3>
+                                        <p>Track institutions, key contacts, and deal stages in a unified interactive B2B Sales pipeline tailored for academic partnerships.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                                        <h3>Hyper-Personalized Outreach</h3>
+                                        <p>The AI Outreach Assistant composes tailored pitch messages using targeted student size metrics and course options in seconds.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                                        <h3>Predictive Lead Priority</h3>
+                                        <p>Our priority algorithm automatically ratings each college from 0 to 100 based on scale and interest, targeting high-value targets first.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. CAPABILITIES TAB -->
+                            <div class="about-tab-pane" id="about-tab-capabilities">
+                                <div class="about-grid four-cols">
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-brain"></i></div>
+                                        <h3>AI Lead Scoring</h3>
+                                        <p>Calculates strategic value using student strength, university sector, and partnership alignment indexes.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-envelope-open-text"></i></div>
+                                        <h3>Personalized Pitches</h3>
+                                        <p>Generates templates and drafts with custom tones (professional, collaborative, persuasive) instantly.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-clipboard-list"></i></div>
+                                        <h3>Auto-Reminders</h3>
+                                        <p>Creates follow-up tasks and logs timeline events automatically when leads advance along pipeline stages.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-file-csv"></i></div>
+                                        <h3>Spreadsheet Wizard</h3>
+                                        <p>Quickly import university data from Excel or CSV files with real-time validation and batch uploads.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. DEVELOPER STACK TAB -->
+                            <div class="about-tab-pane" id="about-tab-stack">
+                                <div class="about-grid">
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-code"></i></div>
+                                        <h3>Frontend</h3>
+                                        <p>Built with clean HTML5 Semantics, custom CSS variables, and modern Flexbox/Grid layouts for responsiveness.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-gear"></i></div>
+                                        <h3>Logic & Router</h3>
+                                        <p>Single Page Application (SPA) state engine powered by Vanilla ES6 JavaScript controller routing.</p>
+                                    </div>
+                                    <div class="about-feature-card">
+                                        <div class="about-feature-icon" style="color: var(--primary);"><i class="fa-solid fa-chart-column"></i></div>
+                                        <h3>Analytics & Storage</h3>
+                                        <p>Real-time visual reports driven by Chart.js, persisting state securely inside browser local storage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ADD / EDIT LEAD -->
+    <div class="modal-backdrop" id="lead-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="lead-modal-title">Add New Institution Lead</h3>
+                <span class="modal-close" id="lead-modal-close">&times;</span>
+            </div>
+            <form id="lead-form">
+                <input type="hidden" id="lead-id">
+                <div class="form-grid">
+                    <div class="form-group col-span-2">
+                        <label for="lead-college-name">College / University Name *</label>
+                        <input type="text" id="lead-college-name" class="form-control" required placeholder="e.g. GLA University">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-location">Location (City, State) *</label>
+                        <input type="text" id="lead-location" class="form-control" required placeholder="e.g. Mathura, UP">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-contact-person">Contact Person Name *</label>
+                        <input type="text" id="lead-contact-person" class="form-control" required placeholder="e.g. Dr. R. Sharma">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-email">Email Address *</label>
+                        <input type="email" id="lead-email" class="form-control" required placeholder="e.g. contact@university.edu">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-phone">Phone Number</label>
+                        <input type="text" id="lead-phone" class="form-control" placeholder="e.g. +91 98765 43210">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-type">Institution Type</label>
+                        <select id="lead-type" class="form-control">
+                            <option value="Private University">Private University</option>
+                            <option value="Government College">Government College</option>
+                            <option value="Autonomous College">Autonomous College</option>
+                            <option value="Affiliated Engineering College">Affiliated Engineering College</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-strength">Student Strength *</label>
+                        <input type="number" id="lead-strength" class="form-control" required placeholder="e.g. 5000" min="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-interest">Program Interest</label>
+                        <select id="lead-interest" class="form-control">
+                            <option value="Technical Bootcamps">Technical Bootcamps</option>
+                            <option value="AI & ML Lab Integration">AI & ML Lab Integration</option>
+                            <option value="Curriculum Development">Curriculum Development</option>
+                            <option value="Industry Placement Drives">Industry Placement Drives</option>
+                            <option value="Short Workshops">Short Workshops</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-source">Lead Source</label>
+                        <select id="lead-source" class="form-control">
+                            <option value="Direct Outreach">Direct Outreach</option>
+                            <option value="Inbound Website">Inbound Website</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Academic Conference">Academic Conference</option>
+                            <option value="LinkedIn Campaigns">LinkedIn Campaigns</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lead-status">Lead Status</label>
+                        <select id="lead-status" class="form-control">
+                            <option value="New Lead">New Lead</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Meeting Scheduled">Meeting Scheduled</option>
+                            <option value="Proposal Sent">Proposal Sent</option>
+                            <option value="Negotiation">Negotiation</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="lead-modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="lead-modal-save-btn">Save Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SCHEDULE MEETING -->
+    <div class="modal-backdrop" id="meeting-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule Partner Meeting</h3>
+                <span class="modal-close" id="meeting-modal-close">&times;</span>
+            </div>
+            <form id="meeting-form">
+                <div class="form-group">
+                    <label for="meeting-lead-select">Associate with Lead *</label>
+                    <select id="meeting-lead-select" class="form-control" required>
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="meeting-date">Date *</label>
+                        <input type="date" id="meeting-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-time">Time *</label>
+                        <input type="time" id="meeting-time" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="meeting-title">Meeting Title / Agenda *</label>
+                    <input type="text" id="meeting-title" class="form-control" required placeholder="e.g. Curriculum alignment workshop proposal presentation">
+                </div>
+                <div class="form-group">
+                    <label for="meeting-description">Notes & Preparation Details</label>
+                    <textarea id="meeting-description" class="form-control" rows="3" placeholder="e.g. Review student strength..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="meeting-modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule & Auto-Remind</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT PROFILE -->
+    <div class="modal-backdrop" id="profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Profile Settings</h3>
+                <span class="modal-close" id="profile-modal-close">&times;</span>
+            </div>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="profile-name-input">Display Name *</label>
+                    <input type="text" id="profile-name-input" class="form-control" required placeholder="e.g. Sneha Sharma">
+                </div>
+                <div class="form-group">
+                    <label for="profile-role-input">Role Title *</label>
+                    <input type="text" id="profile-role-input" class="form-control" required placeholder="e.g. Sales Manager">
+                </div>
+                <div class="form-group">
+                    <label for="profile-pic-file">Upload Image from File</label>
+                    <input type="file" id="profile-pic-file" class="form-control" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="profile-pic-input">Or enter Image URL</label>
+                    <input type="url" id="profile-pic-input" class="form-control" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+                <div class="form-group">
+                    <label>Or select Preset Avatar</label>
+                    <div class="avatar-presets">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120" alt="Preset 1" class="preset-avatar-img">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Preset 2" class="preset-avatar-img">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120" alt="Preset 3" class="preset-avatar-img">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120" alt="Preset 4" class="preset-avatar-img">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="profile-modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Entrypoint -->
+    <script src="app.js?v=1.0.3"></script>
+</body>
+</html>
